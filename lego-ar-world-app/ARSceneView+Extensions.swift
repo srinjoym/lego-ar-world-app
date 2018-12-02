@@ -22,6 +22,7 @@ extension ARSCNView {
             camera.wantsExposureAdaptation = true
             camera.exposureOffset = -1
             camera.minimumExposure = -1
+            camera.automaticallyAdjustsZRange = true
         }
         
         debugOptions = ARSCNDebugOptions.showFeaturePoints

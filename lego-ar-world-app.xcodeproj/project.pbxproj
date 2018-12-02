@@ -13,8 +13,13 @@
 		7F08341221A8D3D70096841F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7F08341021A8D3D70096841F /* Main.storyboard */; };
 		7F08341421A8D3D90096841F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7F08341321A8D3D90096841F /* Assets.xcassets */; };
 		7F08341721A8D3D90096841F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7F08341521A8D3D90096841F /* LaunchScreen.storyboard */; };
+		7F392BF221B0D45600FCAC42 /* Plane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F392BF121B0D45600FCAC42 /* Plane.swift */; };
+		7F392BF421B0E47800FCAC42 /* BoundingBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F392BF321B0E47800FCAC42 /* BoundingBox.swift */; };
+		7F392BF821B0F9DA00FCAC42 /* LegoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F392BF721B0F9DA00FCAC42 /* LegoModel.swift */; };
 		7F56E00F21B09EF8002DFF34 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F56E00E21B09EF8002DFF34 /* SettingsViewController.swift */; };
-		7F56E01121B0BE32002DFF34 /* ARSceneViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F56E01021B0BE32002DFF34 /* ARSceneViewExtension.swift */; };
+		7F56E01121B0BE32002DFF34 /* ARSceneView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F56E01021B0BE32002DFF34 /* ARSceneView+Extensions.swift */; };
+		7F58DADE21B3869500562D1F /* LegoScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F58DADD21B3869500562D1F /* LegoScene.swift */; };
+		7F58DAE021B3940400562D1F /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F58DADF21B3940400562D1F /* Models.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,8 +31,13 @@
 		7F08341321A8D3D90096841F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7F08341621A8D3D90096841F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7F08341821A8D3D90096841F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7F392BF121B0D45600FCAC42 /* Plane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Plane.swift; sourceTree = "<group>"; };
+		7F392BF321B0E47800FCAC42 /* BoundingBox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoundingBox.swift; sourceTree = "<group>"; };
+		7F392BF721B0F9DA00FCAC42 /* LegoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegoModel.swift; sourceTree = "<group>"; };
 		7F56E00E21B09EF8002DFF34 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
-		7F56E01021B0BE32002DFF34 /* ARSceneViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARSceneViewExtension.swift; sourceTree = "<group>"; };
+		7F56E01021B0BE32002DFF34 /* ARSceneView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ARSceneView+Extensions.swift"; sourceTree = "<group>"; };
+		7F58DADD21B3869500562D1F /* LegoScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegoScene.swift; sourceTree = "<group>"; };
+		7F58DADF21B3940400562D1F /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,17 +70,30 @@
 		7F08340921A8D3D70096841F /* lego-ar-world-app */ = {
 			isa = PBXGroup;
 			children = (
+				7F392BF021B0D44700FCAC42 /* UI Elements */,
 				7F08340A21A8D3D70096841F /* AppDelegate.swift */,
 				7F08340C21A8D3D70096841F /* art.scnassets */,
 				7F08340E21A8D3D70096841F /* MainViewController.swift */,
-				7F56E01021B0BE32002DFF34 /* ARSceneViewExtension.swift */,
+				7F56E01021B0BE32002DFF34 /* ARSceneView+Extensions.swift */,
 				7F56E00E21B09EF8002DFF34 /* SettingsViewController.swift */,
 				7F08341021A8D3D70096841F /* Main.storyboard */,
 				7F08341321A8D3D90096841F /* Assets.xcassets */,
 				7F08341521A8D3D90096841F /* LaunchScreen.storyboard */,
 				7F08341821A8D3D90096841F /* Info.plist */,
+				7F58DADD21B3869500562D1F /* LegoScene.swift */,
+				7F58DADF21B3940400562D1F /* Models.swift */,
 			);
 			path = "lego-ar-world-app";
+			sourceTree = "<group>";
+		};
+		7F392BF021B0D44700FCAC42 /* UI Elements */ = {
+			isa = PBXGroup;
+			children = (
+				7F392BF321B0E47800FCAC42 /* BoundingBox.swift */,
+				7F392BF121B0D45600FCAC42 /* Plane.swift */,
+				7F392BF721B0F9DA00FCAC42 /* LegoModel.swift */,
+			);
+			path = "UI Elements";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -147,8 +170,13 @@
 			files = (
 				7F08340F21A8D3D70096841F /* MainViewController.swift in Sources */,
 				7F08340B21A8D3D70096841F /* AppDelegate.swift in Sources */,
-				7F56E01121B0BE32002DFF34 /* ARSceneViewExtension.swift in Sources */,
+				7F392BF221B0D45600FCAC42 /* Plane.swift in Sources */,
+				7F392BF421B0E47800FCAC42 /* BoundingBox.swift in Sources */,
+				7F56E01121B0BE32002DFF34 /* ARSceneView+Extensions.swift in Sources */,
+				7F392BF821B0F9DA00FCAC42 /* LegoModel.swift in Sources */,
+				7F58DAE021B3940400562D1F /* Models.swift in Sources */,
 				7F56E00F21B09EF8002DFF34 /* SettingsViewController.swift in Sources */,
+				7F58DADE21B3869500562D1F /* LegoScene.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
