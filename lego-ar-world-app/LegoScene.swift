@@ -14,6 +14,9 @@ class LegoScene {
     var totalLayers = Int()
     var currentLayer = Int()
     var currentModel:LegoModel?
+    var planes = [ARPlaneAnchor: Plane]()
+    
+    var finished = false
     
     enum LegoSceneError: Error {
         case modelChanged
@@ -25,41 +28,91 @@ class LegoScene {
         var layerNum = Int()
     }
     
-    init(_ anchor: ARObjectAnchor) {
-        if let anchorName = anchor.name {
-            let resourceName = self.parseResourceName(anchorName)
-            self.modelName = resourceName.modelName
-            self.currentLayer = resourceName.layerNum
-            self.setTotalLayers()
-            self.updateCurrentModel(anchor)
-        }
+    init(_ anchorName: String) {
+        let resourceName = self.parseResourceName(anchorName)
+        self.modelName = resourceName.modelName
+        self.currentLayer = resourceName.layerNum
+        self.setTotalLayers()
+        self.updateCurrentModel(anchorName)
     }
     
-    func updateCurrentModel(_ anchor: ARObjectAnchor) {
-        guard let anchorName = anchor.name else { return }
+    init(anchorName: String, planes: [ARPlaneAnchor: Plane]) {
+        self.planes = planes
         
         let resourceName = self.parseResourceName(anchorName)
+        self.modelName = resourceName.modelName
+        self.currentLayer = resourceName.layerNum
+        self.setTotalLayers()
+        self.updateCurrentModel(anchorName)
+    }
+    
+    func updateCurrentModel(_ anchorName: String) {
+       
+        let resourceName = self.parseResourceName(anchorName)
         
-        if (resourceName.layerNum >= self.currentLayer && resourceName.layerNum < self.totalLayers){
+        if (resourceName.layerNum >= self.totalLayers){
+            self.finished = true
+            return
+        }
+        
+        if let currentModel = self.currentModel {
+            currentModel.removeFromParentNode()
+        }
+        
+        if (resourceName.layerNum >= self.currentLayer){
             // User hasn't finished model yet
             self.modelName = resourceName.modelName
 //            if (resourceName.layerNum != self.currentLayer) {
                 self.currentLayer = resourceName.layerNum
                 let nextFilePath = "art.scnassets/" + self.nextLayerModelName()
-                
-                //            if let currentModel = self.currentModel {
-                //                currentModel.removeFromParentNode()
-                //            }
+            
                 if let layers = StoredLegoModels[self.modelName] {
                     let transform = layers[self.currentLayer-1].transform
-                    self.currentModel = LegoModel(fileName: nextFilePath, anchor: anchor, transform: transform)
+                    self.currentModel = LegoModel(fileName: nextFilePath, transform: transform)
                 } else {
-                    self.currentModel = LegoModel(fileName: nextFilePath, anchor: anchor)
+                    self.currentModel = LegoModel(fileName: nextFilePath)
                 }
-//            }
-        } else {
-            // User has finished model!!
+            }
+//        } else {
+//            // User has finished model!!
+//            self.finished = true
+//        }
+    }
+    
+    func advanceLayer() {
+        if (self.currentLayer + 1 <= self.totalLayers) {
+            self.currentLayer += 1
+            let nextFilePath = "art.scnassets/" + self.nextLayerModelName()
+            
+            if let currentModel = self.currentModel {
+                let parent = currentModel.parent
+                currentModel.removeFromParentNode()
+                self.currentModel = LegoModel(fileName: nextFilePath)
+                
+                parent?.addChildNode(self.currentModel!)
+            }
         }
+    }
+    
+//    func revertLayer() {
+//        if (self.currentLayer + 1 <= self.totalLayers) {
+//            self.currentLayer += 1
+//            let nextFilePath = "art.scnassets/" + self.nextLayerModelName()
+//
+//            if let currentModel = self.currentModel {
+//                let parent = currentModel.parent
+//                currentModel.removeFromParentNode()
+//                self.currentModel = LegoModel(fileName: nextFilePath)
+//
+//
+//                parent?.addChildNode(self.currentModel!)
+//            }
+//
+//        }
+//    }
+    
+    func updatePlanes(_ planes: [ARPlaneAnchor: Plane]) {
+        self.planes = planes
     }
     
     func parseResourceName(_ name: String) -> ResourceName {

@@ -24,7 +24,7 @@ class Plane: SCNNode {
         material.diffuse.contents = grid
         self.planeGeometry.materials = [material]
         
-        self.planeGeometry.firstMaterial?.transparency = 0.5
+        self.planeGeometry.firstMaterial?.transparency = 0.75
         self.planeNode = SCNNode(geometry: planeGeometry)
         self.planeNode.transform = SCNMatrix4MakeRotation(-Float.pi / 2.0, 1, 0, 0)
         

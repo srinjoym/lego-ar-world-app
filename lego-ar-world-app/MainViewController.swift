@@ -27,6 +27,7 @@ class MainViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         restartPlaneDetection()
+        configureSettings()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -38,7 +39,7 @@ class MainViewController: UIViewController {
     func restartPlaneDetection() {
         // configure session
         if let worldSessionConfig = sessionConfig as? ARWorldTrackingConfiguration {
-            worldSessionConfig.planeDetection = .horizontal
+//            worldSessionConfig.planeDetection = .horizontal
             configureDetectionObjects(sessionConfig: worldSessionConfig, groupName: "LegoModels_1")
             
             session.run(worldSessionConfig, options: [.resetTracking, .removeExistingAnchors])
@@ -80,7 +81,80 @@ class MainViewController: UIViewController {
     @objc
     func dismissSettings() {
         self.dismiss(animated: true, completion: nil)
-//        updateSettings()
+        updateSettings()
+    }
+    
+    var showFeaturePoints: Bool = UserDefaults.standard.bool(for: .showFeaturePoints) {
+        didSet {
+            configureSettings()
+            UserDefaults.standard.set(showFeaturePoints, for: .showFeaturePoints)
+        }
+    }
+    
+    var showPlanes: Bool = UserDefaults.standard.bool(for: .showPlanes) {
+        didSet {
+            configureSettings()
+            UserDefaults.standard.set(showPlanes, for: .showPlanes)
+        }
+    }
+    
+    var showOrigin: Bool = UserDefaults.standard.bool(for: .showWorldOrigin) {
+        didSet {
+            configureSettings()
+            UserDefaults.standard.set(showOrigin, for: .showWorldOrigin)
+        }
+    }
+    
+    private func configureSettings() {
+        if showFeaturePoints {
+            sceneView.debugOptions.insert(.showFeaturePoints)
+        } else {
+            sceneView.debugOptions.remove(.showFeaturePoints)
+        }
+        
+        if showPlanes {
+            // Enable Plane Detection
+            if let worldSessionConfig = sessionConfig as? ARWorldTrackingConfiguration {
+                worldSessionConfig.planeDetection = .horizontal
+                session.run(worldSessionConfig, options: [])
+            }
+        } else {
+            if let worldSessionConfig = sessionConfig as? ARWorldTrackingConfiguration {
+                worldSessionConfig.planeDetection = []
+                session.run(worldSessionConfig, options: [])
+            }
+            
+            for (_ , plane) in planes {
+                plane.removeFromParentNode()
+            }
+            planes.removeAll()
+        }
+        
+        if showOrigin {
+            sceneView.debugOptions.insert(.showWorldOrigin)
+        } else {
+            sceneView.debugOptions.remove(.showWorldOrigin)
+        }
+    }
+    
+    private func updateSettings() {
+        let defaults = UserDefaults.standard
+        
+        showFeaturePoints = defaults.bool(for: .showFeaturePoints)
+        showPlanes = defaults.bool(for: .showPlanes)
+        showOrigin = defaults.bool(for: .showWorldOrigin)
+    }
+    
+    
+
+    @IBAction func forwardButton(_ sender: Any) {
+    }
+    @IBAction func backButton(_ sender: Any) {
+    }
+    @IBAction func hideButton(_ sender: Any) {
+        if let currentModel = currentLegoScene?.currentModel {
+                currentModel.isHidden = !currentModel.isHidden
+        }
     }
     
     // MARK: - Planes
@@ -89,9 +163,6 @@ class MainViewController: UIViewController {
     
     func displayPlane(node: SCNNode, anchor: ARAnchor) {
         guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
-//        DispatchQueue.main.async {
-//            self.messageBox.text = "Plane Detected!"
-//        }
         let planeNode = Plane(planeAnchor)
         planes[planeAnchor] = planeNode
         node.addChildNode(planeNode)
@@ -99,19 +170,14 @@ class MainViewController: UIViewController {
     
     func removePlane(node: SCNNode, anchor: ARAnchor) {
         guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
-        DispatchQueue.main.async {
-            self.messageBox.text = "Plane Removed"
-        }
         if let planeNode = planes[planeAnchor] {
             planeNode.removeFromParentNode()
         }
+        planes.removeValue(forKey: planeAnchor)
     }
     
     func updatePlane(node: SCNNode, anchor: ARAnchor) {
         guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
-//        DispatchQueue.main.async {
-//            self.messageBox.text = "Plane Updated"
-//        }
         if let planeNode = planes[planeAnchor] {
             planeNode.updatePosition(planeAnchor)
         }
@@ -123,17 +189,19 @@ extension MainViewController: ARSCNViewDelegate {
     
     //     Override to create and configure nodes for anchors added to the view's session.
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
-        switch anchor {
-        case is ARObjectAnchor: processDetectedObject(node: node, anchor: anchor)
-//        case is ARPlaneAnchor: displayPlane(node: node, anchor: anchor)
-        default: return
+        DispatchQueue.main.async {
+            switch anchor {
+            case is ARObjectAnchor: self.processDetectedObject(node: node, anchor: anchor)
+            case is ARPlaneAnchor: self.displayPlane(node: node, anchor: anchor)
+            default: return
+            }
         }
     }
     
     func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
         switch anchor {
-        case is ARObjectAnchor: updateObject(node: node, anchor: anchor)
-//        case is ARPlaneAnchor: updatePlane(node: node, anchor: anchor)
+//        case is ARObjectAnchor: updateObject(node: node, anchor: anchor)
+        case is ARPlaneAnchor: updatePlane(node: node, anchor: anchor)
         default: return
         }
     }
@@ -146,44 +214,63 @@ extension MainViewController: ARSCNViewDelegate {
         }
     }
     
-    func updateObject(node: SCNNode, anchor: ARAnchor) {
-        guard let objectAnchor = anchor as? ARObjectAnchor else { return }
-        
-        DispatchQueue.main.async {
-            self.messageBox.text = """
-            Object Updated:
-            Name: \(objectAnchor.referenceObject.name!)
-            Transform: \(objectAnchor.transform)
-            """
-            
-            if let currentLegoScene = self.currentLegoScene {
-                currentLegoScene.updateCurrentModel(objectAnchor)
-                
-                if let worldSessionConfig = self.sessionConfig as? ARWorldTrackingConfiguration {
-                    self.configureDetectionObjects(sessionConfig: worldSessionConfig, groupName: "LegoModels_\(currentLegoScene.currentLayer)")
-                }
-            }
-        }
-    }
+//    func updateObject(node: SCNNode, anchor: ARAnchor) {
+//        guard let objectAnchor = anchor as? ARObjectAnchor else { return }
+//        
+//        DispatchQueue.main.async {
+//            self.messageBox.text = """
+//            Object Updated:
+//            Name: \(objectAnchor.referenceObject.name!)
+//            Transform: \(objectAnchor.transform)
+//            """
+//            
+//            if let currentLegoScene = self.currentLegoScene {
+//                currentLegoScene.updateCurrentModel(objectAnchor.name!)
+//                
+//                if let worldSessionConfig = self.sessionConfig as? ARWorldTrackingConfiguration {
+//                    self.configureDetectionObjects(sessionConfig: worldSessionConfig, groupName: "LegoModels_\(currentLegoScene.currentLayer+1)")
+//                }
+//            }
+//        }
+//    }
     
     func processDetectedObject(node: SCNNode, anchor: ARAnchor) {
         guard let objectAnchor = anchor as? ARObjectAnchor else { return }
         
-        DispatchQueue.main.async {
-            self.messageBox.text = "Object Detected: \(objectAnchor.name!)"
+//        if (self.showFeaturePoints) {
+//            self.messageBox.text += "\n Object Detected: \(objectAnchor.name!)"
+//        }
+        
+        
+        var previousLayer = 0
+        if let currentLegoScene = self.currentLegoScene {
+            previousLayer = currentLegoScene.currentLayer
+            currentLegoScene.updatePlanes(planes)
+            currentLegoScene.updateCurrentModel(objectAnchor.name!)
+        } else {
+            self.currentLegoScene = LegoScene(anchorName: objectAnchor.name!, planes: planes)
+        }
+        
+        if let modelNode = self.currentLegoScene?.currentModel {
+            node.addChildNode(modelNode)
             
-            let objectNode = BoundingBox(objectAnchor)
-//            node.addChildNode(objectNode)
-            
-            if let currentLegoScene = self.currentLegoScene {
-                currentLegoScene.updateCurrentModel(objectAnchor)
-            } else {
-                self.currentLegoScene = LegoScene(objectAnchor)
+            if (currentLegoScene!.currentLayer > previousLayer) {
+                self.messageBox.text = "Great Job! Let's move to layer \((currentLegoScene?.currentLayer)! + 1)"
+            }
+        }
+        
+        if let currentLegoScene = self.currentLegoScene {
+            if currentLegoScene.finished {
+                self.messageBox.text = "You finished the model!"
             }
             
-            if let modelNode = self.currentLegoScene?.currentModel {
-                node.addChildNode(modelNode)
+            if let worldSessionConfig = self.sessionConfig as? ARWorldTrackingConfiguration {
+                if (currentLegoScene.currentLayer != currentLegoScene.totalLayers) {
+                    self.configureDetectionObjects(sessionConfig: worldSessionConfig, groupName: "LegoModels_\(currentLegoScene.currentLayer+1)")
+                    session.run(worldSessionConfig, options: [])
+                }
             }
+            
         }
     }
     

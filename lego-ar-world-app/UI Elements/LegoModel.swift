@@ -9,24 +9,18 @@ import SceneKit
 import ARKit
 
 class LegoModel: SCNNode {
-    
-    var objectAnchor: ARObjectAnchor
-    var objectNode: SCNNode
-    
-    init(fileName: String, anchor: ARObjectAnchor, transform: SCNVector3? = nil) {
-        self.objectAnchor = anchor
+    init(fileName: String, transform: SCNVector3? = nil) {
         
         let modelScene = SCNScene(named: fileName)
         
         guard let modelNode = modelScene?.rootNode else {
             fatalError("Could not load root node from model scene")
         }
-
-        self.objectNode = modelNode.clone()
-//        self.objectNode.transform = SCNMatrix4MakeRotation(-Float.pi / 2.0, 1, 0, 0)
+        
         super.init()
         
-        self.addChildNode(objectNode)
+        self.addChildNode(modelNode)
+        self.transform = SCNMatrix4MakeRotation(Float.pi / 2.0, 0, -Float.pi / 2.0, 0)
         
         if let position = transform {
             self.position = position

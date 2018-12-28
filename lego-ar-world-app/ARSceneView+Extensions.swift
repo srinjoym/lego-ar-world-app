@@ -25,6 +25,6 @@ extension ARSCNView {
             camera.automaticallyAdjustsZRange = true
         }
         
-        debugOptions = ARSCNDebugOptions.showFeaturePoints
+//        debugOptions = ARSCNDebugOptions.showFeaturePoints
     }
 }
