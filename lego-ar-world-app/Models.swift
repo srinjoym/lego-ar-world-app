@@ -36,4 +36,9 @@ let StoredLegoModels: [String: [LayerInfo]] = [
         LayerInfo(layer: 4, transform: SCNVector3(0,0,0)),
         LayerInfo(layer: 5, transform: SCNVector3(0,0,0))
     ]
+    
+    "DemoPart": [
+        LayerInfo(layer: 1, transform: SCNVector3(0, 0, 0)),
+        LayerInfo(layer: 2, transform: SCNVecto3(-0.05600, 0.016, 0.016)),
+        LayerInfo(layer: 3, transform: SCNVector3(-0.0160, 0.0320, 0.04160))
 ]
