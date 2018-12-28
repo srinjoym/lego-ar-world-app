@@ -8,7 +8,7 @@
 import SceneKit
 import ARKit
 
-class BoundingBox: SCNNode {
+class BoundingBoxNode: SCNNode {
     
     var objectAnchor: ARObjectAnchor
     var objectGeometry: SCNBox

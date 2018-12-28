@@ -40,17 +40,23 @@ class MainViewController: UIViewController {
         // configure session
         if let worldSessionConfig = sessionConfig as? ARWorldTrackingConfiguration {
 //            worldSessionConfig.planeDetection = .horizontal
-            configureDetectionObjects(sessionConfig: worldSessionConfig, groupName: "LegoModels_1")
-            
             session.run(worldSessionConfig, options: [.resetTracking, .removeExistingAnchors])
         }
     }
     
-    func configureDetectionObjects(sessionConfig: ARWorldTrackingConfiguration, groupName: String) {
-        guard let referenceObjects = ARReferenceObject.referenceObjects(inGroupNamed: groupName, bundle: nil) else {
+    func configureDetectionObjects(_ layer: Int) {
+        guard var referenceObjects = ARReferenceObject.referenceObjects(inGroupNamed: self.currentLegoScene!.currentModel.name, bundle: nil) else {
             fatalError("Missing expected asset catalog resources.")
         }
-        sessionConfig.detectionObjects = referenceObjects
+
+        referenceObjects = referenceObjects.filter {
+            $0.name == "\(self.currentLegoScene!.currentModel.name)_\(layer-1)_Tracking" || $0.name == "\(self.currentLegoScene!.currentModel.name)_\(layer)_Detection"
+        }
+        
+        if let worldSessionConfig = self.sessionConfig as? ARWorldTrackingConfiguration {
+            worldSessionConfig.detectionObjects = referenceObjects
+            session.run(worldSessionConfig, options: [])
+        }
     }
     
     // MARK: - Settings
@@ -144,26 +150,34 @@ class MainViewController: UIViewController {
         showPlanes = defaults.bool(for: .showPlanes)
         showOrigin = defaults.bool(for: .showWorldOrigin)
     }
-    
-    
 
-    @IBAction func forwardButton(_ sender: Any) {
+    @IBAction func addButton(_ button: UIButton) {
+        let rowHeight = 45
+        let popoverSize = CGSize(width: 250, height: rowHeight * Models.count)
+        
+        let objectViewController = ChooseModelViewController(size: popoverSize)
+        objectViewController.delegate = self
+        objectViewController.modalPresentationStyle = .popover
+        objectViewController.popoverPresentationController?.delegate = self
+        self.present(objectViewController, animated: true, completion: nil)
+        
+        objectViewController.popoverPresentationController?.sourceView = button
+        objectViewController.popoverPresentationController?.sourceRect = button.bounds
     }
-    @IBAction func backButton(_ sender: Any) {
-    }
+    
     @IBAction func hideButton(_ sender: Any) {
-        if let currentModel = currentLegoScene?.currentModel {
-                currentModel.isHidden = !currentModel.isHidden
+        if let currentNode = currentLegoScene?.currentNode {
+                currentNode.isHidden = !currentNode.isHidden
         }
     }
     
     // MARK: - Planes
     
-    var planes = [ARPlaneAnchor: Plane]()
+    var planes = [ARPlaneAnchor: PlaneNode]()
     
     func displayPlane(node: SCNNode, anchor: ARAnchor) {
         guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
-        let planeNode = Plane(planeAnchor)
+        let planeNode = PlaneNode(planeAnchor)
         planes[planeAnchor] = planeNode
         node.addChildNode(planeNode)
     }
@@ -236,41 +250,21 @@ extension MainViewController: ARSCNViewDelegate {
     
     func processDetectedObject(node: SCNNode, anchor: ARAnchor) {
         guard let objectAnchor = anchor as? ARObjectAnchor else { return }
-        
-//        if (self.showFeaturePoints) {
-//            self.messageBox.text += "\n Object Detected: \(objectAnchor.name!)"
-//        }
-        
-        
         var previousLayer = 0
         if let currentLegoScene = self.currentLegoScene {
             previousLayer = currentLegoScene.currentLayer
             currentLegoScene.updatePlanes(planes)
-            currentLegoScene.updateCurrentModel(objectAnchor.name!)
-        } else {
-            self.currentLegoScene = LegoScene(anchorName: objectAnchor.name!, planes: planes)
-        }
-        
-        if let modelNode = self.currentLegoScene?.currentModel {
-            node.addChildNode(modelNode)
+            let didUpdateNode = currentLegoScene.updateCurrentNode(node: node, anchor: objectAnchor)
             
-            if (currentLegoScene!.currentLayer > previousLayer) {
-                self.messageBox.text = "Great Job! Let's move to layer \((currentLegoScene?.currentLayer)! + 1)"
-            }
-        }
-        
-        if let currentLegoScene = self.currentLegoScene {
             if currentLegoScene.finished {
                 self.messageBox.text = "You finished the model!"
             }
-            
-            if let worldSessionConfig = self.sessionConfig as? ARWorldTrackingConfiguration {
-                if (currentLegoScene.currentLayer != currentLegoScene.totalLayers) {
-                    self.configureDetectionObjects(sessionConfig: worldSessionConfig, groupName: "LegoModels_\(currentLegoScene.currentLayer+1)")
-                    session.run(worldSessionConfig, options: [])
-                }
+            else if didUpdateNode {
+                self.messageBox.text = "Great Job! Let's move to layer \(previousLayer + 2)"
+                
+                // Update Detection Objects
+                self.configureDetectionObjects(previousLayer + 2)
             }
-            
         }
     }
     
@@ -299,5 +293,13 @@ extension MainViewController: UIPopoverPresentationControllerDelegate {
     
     func popoverPresentationControllerDidDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) {
 //        updateSettings()
+    }
+}
+
+// MARK: - VirtualObjectSelectionViewControllerDelegate
+extension MainViewController :ChooseModelViewControllerDelegate {
+    func chooseModelViewController(_: ChooseModelViewController, object: LegoModel) {
+        self.currentLegoScene = LegoScene(legoModel: object, planes: self.planes)
+        configureDetectionObjects(2)
     }
 }

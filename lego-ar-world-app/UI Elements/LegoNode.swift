@@ -8,7 +8,7 @@
 import SceneKit
 import ARKit
 
-class LegoModel: SCNNode {
+class LegoNode: SCNNode {
     init(fileName: String, transform: SCNVector3? = nil) {
         
         let modelScene = SCNScene(named: fileName)

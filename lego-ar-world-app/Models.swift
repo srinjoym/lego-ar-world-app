@@ -9,31 +9,20 @@
 import Foundation
 import SceneKit
 
-struct LayerInfo {
-    var layer = Int()
-    var transform = SCNVector3()
+struct LegoModel {
+    var name = String()
+    var iconPath = String()
+    var numLayers = Int()
 }
 
-let StoredLegoModels: [String: [LayerInfo]] = [
-    "LegoShip": [
-        LayerInfo(layer: 1, transform: SCNVector3(0,0,0)),
-        LayerInfo(layer: 2, transform: SCNVector3(-0.048, 0, -0.016)),
-        LayerInfo(layer: 3, transform: SCNVector3(0,0,0))
-    ],
-    "Shanghai": [
-        LayerInfo(layer: 1, transform: SCNVector3(0,0,0)),
-        LayerInfo(layer: 2, transform: SCNVector3(0,0,0)),
-        LayerInfo(layer: 3, transform: SCNVector3(0,0,0)),
-        LayerInfo(layer: 4, transform: SCNVector3(0,0,0)),
-        LayerInfo(layer: 5, transform: SCNVector3(0,0,0)),
-        LayerInfo(layer: 6, transform: SCNVector3(0,0,0)),
-        LayerInfo(layer: 7, transform: SCNVector3(0,0,0))
-    ],
-    "London": [
-        LayerInfo(layer: 1, transform: SCNVector3(0,0,0)),
-        LayerInfo(layer: 2, transform: SCNVector3(0,0,0)),
-        LayerInfo(layer: 3, transform: SCNVector3(0,0,0)),
-        LayerInfo(layer: 4, transform: SCNVector3(0,0,0)),
-        LayerInfo(layer: 5, transform: SCNVector3(0,0,0))
-    ]
+let Models: [LegoModel] = [
+    LegoModel(name: "LegoShip", iconPath: "ship", numLayers: 3),
+    LegoModel(name: "Shanghai", iconPath: "shanghai", numLayers: 7),
+    LegoModel(name: "London", iconPath: "london", numLayers: 5)
+]
+
+let ModelsDict: [String: LegoModel] = [
+    "LegoShip": LegoModel(name: "LegoShip", iconPath: "ship", numLayers: 3),
+    "Shanghai": LegoModel(name: "Shanghai", iconPath: "shanghai", numLayers: 7),
+    "London": LegoModel(name: "London", iconPath: "london", numLayers: 5)
 ]

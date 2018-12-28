@@ -8,7 +8,7 @@
 import SceneKit
 import ARKit
 
-class Plane: SCNNode {
+class PlaneNode: SCNNode {
     
     var planeAnchor: ARPlaneAnchor
     var planeGeometry: SCNPlane

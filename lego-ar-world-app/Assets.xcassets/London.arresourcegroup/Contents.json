@@ -8,16 +8,31 @@
       "filename" : "London_1_Detection.arobject"
     },
     {
+      "filename" : "London_1_Tracking.arobject"
+    },
+    {
       "filename" : "London_2_Detection.arobject"
+    },
+    {
+      "filename" : "London_2_Tracking.arobject"
     },
     {
       "filename" : "London_3_Detection.arobject"
     },
     {
+      "filename" : "London_3_Tracking.arobject"
+    },
+    {
       "filename" : "London_4_Detection.arobject"
     },
     {
+      "filename" : "London_4_Tracking.arobject"
+    },
+    {
       "filename" : "London_5_Detection.arobject"
+    },
+    {
+      "filename" : "London_5_Tracking.arobject"
     }
   ]
 }
