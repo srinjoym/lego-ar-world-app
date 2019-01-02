@@ -10,29 +10,43 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "lego-ar-world-app/MainViewController.swift"
-            timestampString = "567675669.961171"
+            timestampString = "568098735.029429"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "56"
-            endingLineNumber = "56"
-            landmarkName = "configureDetectionObjects(_:)"
+            startingLineNumber = "58"
+            endingLineNumber = "58"
+            landmarkName = "configureDetectionObjects(modelName:layer:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "lego-ar-world-app/LegoScene.swift"
+            timestampString = "568098735.029757"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "41"
+            endingLineNumber = "41"
+            landmarkName = "updateCurrentNode(node:anchor:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "lego-ar-world-app/MainViewController.swift"
-            timestampString = "567675669.961854"
+            timestampString = "568098735.029967"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "252"
-            endingLineNumber = "252"
-            landmarkName = "processDetectedObject(node:anchor:)"
-            landmarkType = "7">
+            startingLineNumber = "277"
+            endingLineNumber = "277">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

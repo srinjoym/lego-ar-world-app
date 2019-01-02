@@ -22,6 +22,9 @@
 		7F58DADE21B3869500562D1F /* LegoScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F58DADD21B3869500562D1F /* LegoScene.swift */; };
 		7F58DAE021B3940400562D1F /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F58DADF21B3940400562D1F /* Models.swift */; };
 		7FE4892421B8354200412971 /* ARCameraTrackingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE4892321B8354200412971 /* ARCameraTrackingState.swift */; };
+		7FF0958B21DC01D100CDBD35 /* Queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF0958A21DC01D100CDBD35 /* Queue.swift */; };
+		7FF0958D21DC0A7000CDBD35 /* MessageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF0958C21DC0A7000CDBD35 /* MessageManager.swift */; };
+		7FF0958F21DC5FB900CDBD35 /* UITextView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF0958E21DC5FB900CDBD35 /* UITextView+Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +45,9 @@
 		7F58DADD21B3869500562D1F /* LegoScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegoScene.swift; sourceTree = "<group>"; };
 		7F58DADF21B3940400562D1F /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		7FE4892321B8354200412971 /* ARCameraTrackingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARCameraTrackingState.swift; sourceTree = "<group>"; };
+		7FF0958A21DC01D100CDBD35 /* Queue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Queue.swift; sourceTree = "<group>"; };
+		7FF0958C21DC0A7000CDBD35 /* MessageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageManager.swift; sourceTree = "<group>"; };
+		7FF0958E21DC5FB900CDBD35 /* UITextView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextView+Extensions.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,8 +83,10 @@
 				7F392BF021B0D44700FCAC42 /* UI Elements */,
 				7F08340A21A8D3D70096841F /* AppDelegate.swift */,
 				7F08340C21A8D3D70096841F /* art.scnassets */,
-				7F08340E21A8D3D70096841F /* MainViewController.swift */,
 				7FE4892321B8354200412971 /* ARCameraTrackingState.swift */,
+				7F08340E21A8D3D70096841F /* MainViewController.swift */,
+				7FF0958C21DC0A7000CDBD35 /* MessageManager.swift */,
+				7FF0958A21DC01D100CDBD35 /* Queue.swift */,
 				7F56E01021B0BE32002DFF34 /* ARSceneView+Extensions.swift */,
 				7F56E00E21B09EF8002DFF34 /* SettingsViewController.swift */,
 				7F08341021A8D3D70096841F /* Main.storyboard */,
@@ -88,6 +96,7 @@
 				7F08341821A8D3D90096841F /* Info.plist */,
 				7F58DADD21B3869500562D1F /* LegoScene.swift */,
 				7F58DADF21B3940400562D1F /* Models.swift */,
+				7FF0958E21DC5FB900CDBD35 /* UITextView+Extensions.swift */,
 			);
 			path = "lego-ar-world-app";
 			sourceTree = "<group>";
@@ -174,6 +183,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7FF0958F21DC5FB900CDBD35 /* UITextView+Extensions.swift in Sources */,
 				7FE4892421B8354200412971 /* ARCameraTrackingState.swift in Sources */,
 				7F08340F21A8D3D70096841F /* MainViewController.swift in Sources */,
 				7F08340B21A8D3D70096841F /* AppDelegate.swift in Sources */,
@@ -181,9 +191,11 @@
 				7F392BF421B0E47800FCAC42 /* BoundingBoxNode.swift in Sources */,
 				7F56E01121B0BE32002DFF34 /* ARSceneView+Extensions.swift in Sources */,
 				7F1C012621D5CEF90042C149 /* ChooseModelViewController.swift in Sources */,
+				7FF0958B21DC01D100CDBD35 /* Queue.swift in Sources */,
 				7F392BF821B0F9DA00FCAC42 /* LegoNode.swift in Sources */,
 				7F58DAE021B3940400562D1F /* Models.swift in Sources */,
 				7F56E00F21B09EF8002DFF34 /* SettingsViewController.swift in Sources */,
+				7FF0958D21DC0A7000CDBD35 /* MessageManager.swift in Sources */,
 				7F58DADE21B3869500562D1F /* LegoScene.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

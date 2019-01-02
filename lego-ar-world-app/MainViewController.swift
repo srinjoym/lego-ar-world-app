@@ -11,17 +11,20 @@ import SceneKit
 import ARKit
 
 class MainViewController: UIViewController {
-
-    var currentLegoScene: LegoScene?
     let session =  ARSession()
+    
     var sessionConfig: ARConfiguration = ARWorldTrackingConfiguration()
+    var currentLegoScene: LegoScene?
+    var messageManager: MessageManager!
     
     @IBOutlet var sceneView: ARSCNView!
-    @IBOutlet weak var messageBox: UITextView!
+    @IBOutlet weak var messageBox: UITextView!    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         sceneView.setUp(viewController: self, session: session)
+        messageManager = MessageManager(viewController: self)
+        self.messageBox.textContainerInset = UIEdgeInsets(top: 8,left: 5,bottom: 8,right: 5)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -44,18 +47,19 @@ class MainViewController: UIViewController {
         }
     }
     
-    func configureDetectionObjects(_ layer: Int) {
-        guard var referenceObjects = ARReferenceObject.referenceObjects(inGroupNamed: self.currentLegoScene!.currentModel.name, bundle: nil) else {
+    func configureDetectionObjects(modelName:String, layer: Int) {
+        guard var referenceObjects = ARReferenceObject.referenceObjects(inGroupNamed: modelName, bundle: nil) else {
             fatalError("Missing expected asset catalog resources.")
         }
 
         referenceObjects = referenceObjects.filter {
-            $0.name == "\(self.currentLegoScene!.currentModel.name)_\(layer-1)_Tracking" || $0.name == "\(self.currentLegoScene!.currentModel.name)_\(layer)_Detection"
+        $0.name == "\(modelName)_\(layer-1)_Tracking" || $0.name == "\(modelName)_\(layer)_Detection"
         }
         
         if let worldSessionConfig = self.sessionConfig as? ARWorldTrackingConfiguration {
             worldSessionConfig.detectionObjects = referenceObjects
             session.run(worldSessionConfig, options: [])
+            self.messageManager.queueMessage("Configured Detection Objects: \(referenceObjects)")
         }
     }
     
@@ -228,43 +232,11 @@ extension MainViewController: ARSCNViewDelegate {
         }
     }
     
-//    func updateObject(node: SCNNode, anchor: ARAnchor) {
-//        guard let objectAnchor = anchor as? ARObjectAnchor else { return }
-//        
-//        DispatchQueue.main.async {
-//            self.messageBox.text = """
-//            Object Updated:
-//            Name: \(objectAnchor.referenceObject.name!)
-//            Transform: \(objectAnchor.transform)
-//            """
-//            
-//            if let currentLegoScene = self.currentLegoScene {
-//                currentLegoScene.updateCurrentModel(objectAnchor.name!)
-//                
-//                if let worldSessionConfig = self.sessionConfig as? ARWorldTrackingConfiguration {
-//                    self.configureDetectionObjects(sessionConfig: worldSessionConfig, groupName: "LegoModels_\(currentLegoScene.currentLayer+1)")
-//                }
-//            }
-//        }
-//    }
-    
     func processDetectedObject(node: SCNNode, anchor: ARAnchor) {
         guard let objectAnchor = anchor as? ARObjectAnchor else { return }
-        var previousLayer = 0
         if let currentLegoScene = self.currentLegoScene {
-            previousLayer = currentLegoScene.currentLayer
             currentLegoScene.updatePlanes(planes)
-            let didUpdateNode = currentLegoScene.updateCurrentNode(node: node, anchor: objectAnchor)
-            
-            if currentLegoScene.finished {
-                self.messageBox.text = "You finished the model!"
-            }
-            else if didUpdateNode {
-                self.messageBox.text = "Great Job! Let's move to layer \(previousLayer + 2)"
-                
-                // Update Detection Objects
-                self.configureDetectionObjects(previousLayer + 2)
-            }
+            currentLegoScene.updateCurrentNode(node: node, anchor: objectAnchor)
         }
     }
     
@@ -299,7 +271,6 @@ extension MainViewController: UIPopoverPresentationControllerDelegate {
 // MARK: - VirtualObjectSelectionViewControllerDelegate
 extension MainViewController :ChooseModelViewControllerDelegate {
     func chooseModelViewController(_: ChooseModelViewController, object: LegoModel) {
-        self.currentLegoScene = LegoScene(legoModel: object, planes: self.planes)
-        configureDetectionObjects(2)
+        self.currentLegoScene = LegoScene(viewController: self, legoModel: object, planes: self.planes)
     }
 }
